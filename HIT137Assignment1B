@@ -1,0 +1,14 @@
+ #Group Name: [DAN/EXT 12]
+#Group Members:
+              #Sandeep Prasai - [S396604]
+              #Avinash Babu Chalise - [S396603]
+              #Rahul Kandel - [S396567]
+              #Harlen Rajith Christopher Jansz - [S358415]
+              
+# PART B:  Drawing Square based on the user input. 
+print("Drawing a Square")
+size = int(input("Enter the size of the square: "))
+ 
+for i in range(size):
+    print("* " * size)
+    
