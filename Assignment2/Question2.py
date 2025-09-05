@@ -77,6 +77,47 @@ def tempeRange():
     print("Temperature range saved to largest_temp_range_station.txt") 
 
 
+# Check which station is most stable or most variable
+def stabilityCheck():
+    StationTemps = {}  
+
+    # Looping through all CSV files and collect temperature data for each station
+    for df in readCsvFiles():
+        for _, row in df.iterrows():
+            station_name = row["STATION_NAME"]  
+            temperatures = row.loc["January":"December"].dropna().tolist()  
+
+            # If the station is not in the dictionary, add it
+            if station_name not in StationTemps:
+                StationTemps[station_name] = []
+            StationTemps[station_name].extend(temperatures)
+
+    # Dictionary to store the standard deviation for each station
+    StationStd = {}
+
+    # Calculate the standard deviation of temperatures for each station
+    for station_name, temperatures in StationTemps.items():
+        if len(temperatures) > 0:  
+            StationStd[station_name] = pd.Series(temperatures).std()  
+
+    # Find the minimum and maximum standard deviation values
+    minStd = min(StationStd.values())  
+    maxStd = max(StationStd.values())  
+
+    # List the stations with the minimum and maximum standard deviation
+    MostStableStations = [station_name for station_name, std_dev in StationStd.items() if std_dev == minStd]
+    MostVariableStations = [station_name for station_name, std_dev in StationStd.items() if std_dev == maxStd]
+
+    # Write the results to a file
+    with open("temperature_stability_stations.txt", "w") as file:
+        for station_name in MostStableStations:
+            file.write(f"Most Stable: {station_name}: StdDev {round(minStd, 2)}°C\n")
+        for station_name in MostVariableStations:
+            file.write(f"Most Variable: {station_name}: StdDev {round(maxStd, 2)}°C\n")
+
+    print("Temperature stability saved to temperature_stability_stations.txt")
+
 # Calling the functions
 seasonsAverage()
 tempeRange()
+stabilityCheck()
