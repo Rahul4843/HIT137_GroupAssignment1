@@ -1,138 +1,134 @@
 import turtle
 
-def draw_recursive_edge(t, length, depth):
+def draw_bumpy_line(turtle_pen, line_length, detail_level):
     """
-    Drawing a fractal edge by recursively modifying a line segment.
-
-    At each recursive call:
-    - Splitting the line into three parts
-    - Replacing the middle part with a triangular bump
-    - Repeating the same steps for each new segment
+    Drawing a bumpy line using triangle shapes.
+    Increasing the detail by repeating the process at a smaller scale.
     """
-    if depth == 0:
-        # Drawing a straight line when recursion ends
-        t.forward(length)
+    if detail_level == 0:
+        # Drawing a straight line when no more detail is needed
+        turtle_pen.forward(line_length)
     else:
-        # Splitting line and inserting indentation
-        segment = length / 3
+        # Splitting the line into 3 smaller parts
+        piece_length = line_length / 3
 
-        # Drawing the first segment
-        draw_recursive_edge(t, segment, depth - 1)
+        # Drawing the first part of the line
+        draw_bumpy_line(turtle_pen, piece_length, detail_level - 1)
 
-        # Turning right to start the triangle
-        t.right(60)
+        # Turning right to begin the bump
+        turtle_pen.right(60)
         # Drawing the first side of the bump
-        draw_recursive_edge(t, segment, depth - 1)
+        draw_bumpy_line(turtle_pen, piece_length, detail_level - 1)
 
-        # Turning left to form the peak
-        t.left(120)
+        # Turning left to make the peak of the bump
+        turtle_pen.left(120)
         # Drawing the second side of the bump
-        draw_recursive_edge(t, segment, depth - 1)
+        draw_bumpy_line(turtle_pen, piece_length, detail_level - 1)
 
-        # Returning to original direction
-        t.right(60)
-        # Drawing the final segment
-        draw_recursive_edge(t, segment, depth - 1)
+        # Turning back to original direction
+        turtle_pen.right(60)
+        # Drawing the final part of the line
+        draw_bumpy_line(turtle_pen, piece_length, detail_level - 1)
 
-def polygon_pattern_draw(sides, side_length, recursion_depth):
+def create_pattern(number_of_sides, side_length, detail_level):
     """
-    Creating a geometric pattern by applying recursion to each polygon side.
+    Creating a shape with bumpy sides to make a cool pattern.
     """
-    # Setting up the turtle window
-    screen = turtle.Screen()
-    screen.bgcolor("white")
-    screen.title(f"Recursive Pattern: {sides} sides, depth {recursion_depth}")
-    screen.setup(width=1000, height=1000)
+    # Setting up the window
+    window = turtle.Screen()
+    window.bgcolor("white")
+    window.title(f"Cool Pattern: {number_of_sides} sides, detail level {detail_level}")
+    window.setup(width=1000, height=1000)
 
-    # Creating the turtle pen
-    t = turtle.Turtle()
-    t.speed(0)  # Using the fastest drawing speed
-    t.color("black")
-    t.pensize(1)
+    # Creating a turtle for drawing
+    pen = turtle.Turtle()
+    pen.speed(0)  # Drawing as fast as possible
+    pen.color("black")
+    pen.pensize(1)
 
-    # Calculating the angle between sides
-    angle = 360 / sides
+    # Calculating the angle to turn for each side
+    turn_angle = 360 / number_of_sides
 
-    # Estimating pattern growth for better centering
-    growth = (4 / 3) ** recursion_depth
-    size_estimate = side_length * growth
+    # Estimating how big the shape will be with the detail added
+    size_growth = (4 / 3) ** detail_level
+    estimated_size = side_length * size_growth
 
-    # Positioning the turtle at a better starting location
-    start_x = -size_estimate // 2 + 150
-    start_y = size_estimate // 4
-    t.penup()
-    t.goto(start_x, start_y)
-    t.pendown()
+    # Moving the pen to the starting position
+    start_x = -estimated_size // 2 + 150
+    start_y = estimated_size // 4
+    pen.penup()
+    pen.goto(start_x, start_y)
+    pen.pendown()
 
-    # Drawing each side of the polygon
-    for _ in range(sides):
-        draw_recursive_edge(t, side_length, recursion_depth)
-        # Turning the turtle to align with next side
-        t.right(angle)
+    # Drawing each side with bumps
+    for side_number in range(number_of_sides):
+        draw_bumpy_line(pen, side_length, detail_level)
+        # Turning to face the next side
+        pen.right(turn_angle)
 
-    # Hiding the turtle and waiting for click to close
-    t.hideturtle()
-    screen.exitonclick()
+    # Hiding the turtle and waiting for a click to close
+    pen.hideturtle()
+    window.exitonclick()
 
-def get_user_input():
+def ask_user_for_settings():
     """
-    Collecting user input for sides, side length, and recursion depth.
+    Asking the user to choose the shape settings.
     """
     while True:
         try:
-            sides = int(input("Enter the number of sides: "))
+            sides = int(input("How many sides do you want? "))
             if sides < 3:
-                print("A polygon needs at least 3 sides.")
+                print("You need at least 3 sides to make a shape.")
                 continue
             break
         except ValueError:
-            print("Please enter a whole number.")
+            print("Please type a whole number.")
 
     while True:
         try:
-            side_length = int(input("Enter the side length: "))
+            side_length = int(input("How long should each side be? "))
             if side_length <= 0:
-                print("Side length should be a positive number.")
+                print("The side length needs to be bigger than 0.")
                 continue
             break
         except ValueError:
-            print("Please enter a valid number.")
+            print("Please type a number.")
 
     while True:
         try:
-            recursion_depth = int(input("Enter the recursion depth: "))
-            if recursion_depth < 0:
-                print("Depth cannot be negative.")
+            detail_level = int(input("How much detail do you want (0-5)? "))
+            if detail_level < 0:
+                print("Detail level can't be negative.")
                 continue
-            if recursion_depth > 5:
-                print("Warning: Please note that depths above 5 can take a long time to draw.")
-                if input("Continue anyway? (y/n): ").lower() != 'y':
+            if detail_level > 5:
+                print("Warning: High detail levels take a long time to draw.")
+                if input("Do you want to continue anyway? (y/n): ").lower() != 'y':
                     continue
             break
         except ValueError:
-            print("Please enter a valid number.")
+            print("Please type a number.")
 
-    return sides, side_length, recursion_depth
+    return sides, side_length, detail_level
 
-def main():
+def start_program():
     """
-    Running the main program that gathers input and draws the pattern.
+    Starting the program and drawing the pattern.
     """
-    print("Welcome to the Recursive Geometric Pattern Generator!")
-    print("Creating detailed patterns by recursively modifying polygon edges.\n")
+    print("Welcome to the Cool Pattern Maker!")
+    print("This program creates awesome patterns with bumpy, detailed edges.\n")
 
-    # Collecting input from the user
-    sides, side_length, recursion_depth = get_user_input()
+    # Asking the user for input
+    sides, side_length, detail_level = ask_user_for_settings()
 
-    # Displaying summary before drawing
-    print(f"\nDrawing a pattern with:")
+    # Showing the settings to the user
+    print(f"\nI'm going to draw a pattern with:")
     print(f"- {sides} sides")
-    print(f"- Side length of {side_length} pixels")
-    print(f"- Recursion depth: {recursion_depth}")
-    print("\nOpening the drawing window... Click on it to close when done.\n")
+    print(f"- Each side {side_length} pixels long")
+    print(f"- Detail level: {detail_level}")
+    print("\nOpening the drawing window now... Click on it to close when you're done looking!\n")
 
-    # Generating the pattern
-    polygon_pattern_draw(sides, side_length, recursion_depth)
+    # Creating the pattern
+    create_pattern(sides, side_length, detail_level)
 
-if __name__ == "__main__":
-    main()
+# Starting the program
+start_program()
