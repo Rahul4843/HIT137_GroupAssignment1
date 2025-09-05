@@ -1,3 +1,4 @@
+#Importing the libraries
 import os
 import pandas as pd
 
@@ -46,7 +47,7 @@ def seasonsAverage():
 def tempeRange():
     StationRange = {}  # Place to store temperature ranges for each station
 
-    # Loop through all CSV files and read the tmperature data
+    # Loop through all CSV files and read the temperature data
     for df in readCsvFiles():
         for _, row in df.iterrows():
             station = row["STATION_NAME"]  
