@@ -7,7 +7,7 @@ Showing basic explanations of OOP
 """
 
 import os
-from tkinter import fialedialog  # Opening file picker window
+from tkinter import filedialog  # Opening file picker window
 
 # Image Picker Function
 def chooseImageFile(parentWindow=None):
@@ -15,7 +15,7 @@ def chooseImageFile(parentWindow=None):
     It returns the path to the image, or None if they cancel or pick something invalid."""
 
     # File types that the picker will allow. Only images are allowed
-    filetypes = [("Image files", ".jpg *.jpeg *.png *.bmp"), ("All files", "*.*")]
+    filetypes = [("Image files", ".jpg *.jpeg *.png *.bmp"), ("All files", ".*")]
     path = filedialog.askopenfilename(parent=parentWindow, title="Select an image", filetypes=filetypes)
     if not path:
         return None
@@ -31,6 +31,7 @@ def safeRunModel(modelWrapper, inputData):
     """
     try:
         return modelWrapper.processInput(inputData)
+    except Exception as e:
         return f"Error running model: {e}"
 
 def getOopExplanationText():
