@@ -6,5 +6,5 @@ It will open up the GUI window using Tkinter.
 """
 from gui import runGui
 
-if _name_ == "_main_":
+if __name__ == "_main_":
     runGui()
